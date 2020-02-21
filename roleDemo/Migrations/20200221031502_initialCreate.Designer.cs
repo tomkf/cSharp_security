@@ -9,7 +9,7 @@ using roleDemo.Data;
 namespace roleDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200214185712_initialCreate")]
+    [Migration("20200221031502_initialCreate")]
     partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,6 +179,40 @@ namespace roleDemo.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("roleDemo.Data.CustomUser", b =>
+                {
+                    b.Property<string>("UserName")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FirstName")
+                        .IsRequired();
+
+                    b.Property<string>("LastName")
+                        .IsRequired();
+
+                    b.HasKey("UserName");
+
+                    b.ToTable("CustomUsers");
+                });
+
+            modelBuilder.Entity("roleDemo.Data.InvoiceVM", b =>
+                {
+                    b.Property<int>("InvoiceID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<decimal>("Total");
+
+                    b.Property<string>("UserName");
+
+                    b.HasKey("InvoiceID");
+
+                    b.HasIndex("UserName");
+
+                    b.ToTable("Invoices");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -222,6 +256,14 @@ namespace roleDemo.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("roleDemo.Data.InvoiceVM", b =>
+                {
+                    b.HasOne("roleDemo.Data.CustomUser", "CustomnUser")
+                        .WithMany("Invoices")
+                        .HasForeignKey("UserName")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

@@ -193,7 +193,7 @@ namespace roleDemo.Migrations
                     b.ToTable("CustomUsers");
                 });
 
-            modelBuilder.Entity("roleDemo.Data.Invoice", b =>
+            modelBuilder.Entity("roleDemo.Data.InvoiceVM", b =>
                 {
                     b.Property<int>("InvoiceID")
                         .ValueGeneratedOnAdd();
@@ -256,7 +256,7 @@ namespace roleDemo.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("roleDemo.Data.Invoice", b =>
+            modelBuilder.Entity("roleDemo.Data.InvoiceVM", b =>
                 {
                     b.HasOne("roleDemo.Data.CustomUser", "CustomnUser")
                         .WithMany("Invoices")

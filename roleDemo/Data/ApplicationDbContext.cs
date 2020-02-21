@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace roleDemo.Data {
-public class Invoice
+public class InvoiceVM
 {
-    [Key]
+        internal string Id;
+
+        [Key]
     public int InvoiceID { get; set; }
     public string UserName { get; set; }
     public DateTime Created { get; set; }
@@ -33,7 +35,7 @@ public class CustomUser
     public string LastName { get; set; }
 
     // Child
-    public virtual ICollection<Invoice> Invoices { get; set; }
+    public virtual ICollection<InvoiceVM> Invoices { get; set; }
 }
 
 public class ApplicationDbContext : IdentityDbContext
@@ -44,7 +46,7 @@ public class ApplicationDbContext : IdentityDbContext
     }
 
     // Define entity collections.
-    public DbSet<Invoice> Invoices { get; set; }
+    public DbSet<InvoiceVM> Invoices { get; set; }
     public DbSet<CustomUser> CustomUsers { get; set; }
 
     // Use this method to define composite primary keys and foreign keys.
@@ -62,7 +64,7 @@ public class ApplicationDbContext : IdentityDbContext
 
         //-------------------------------------------------------
         // *** Define composite foreign keys here. ***
-        modelBuilder.Entity<Invoice>()
+        modelBuilder.Entity<InvoiceVM>()
             .HasOne(c => c.CustomnUser)
             .WithMany(c => c.Invoices)
             .HasForeignKey(fk => new { fk.UserName })

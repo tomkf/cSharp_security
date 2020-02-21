@@ -11,7 +11,7 @@ using roleDemo.ViewModels;
 namespace roleDemo.Controllers
 {
 
-    [Authorize]
+    
     public class RoleController : Controller
     {
         ApplicationDbContext _context;

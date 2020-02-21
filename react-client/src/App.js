@@ -72,7 +72,7 @@ class App extends React.Component {
     }
 
     logout(e) {
-      alert("Inside logout");
+      alert("User has logged out");
       if(sessionStorage.getItem([AUTH_TOKEN])!=null) {
           sessionStorage.clear();
       }
@@ -98,7 +98,6 @@ class App extends React.Component {
       .then(res => res.json())
       // Data Retrieved.
       .then((data) => {
-          alert(JSON.stringify(data))
           this.setState({todos:data });
       })
 

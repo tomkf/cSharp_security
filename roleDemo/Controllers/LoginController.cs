@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
+using roleDemo.Data;
+using roleDemo.ViewModels;
 
 namespace roleDemo.Controllers
 {
@@ -128,7 +130,15 @@ namespace roleDemo.Controllers
                 claims,
                 expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: credentials);
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            string formattedToken = "";
+            try {
+                formattedToken = new JwtSecurityTokenHandler().WriteToken(token);
+            }
+            catch (Exception ex) {
+                string msg = ex.Message;
+            }
+            return formattedToken;
         }
     }
 }

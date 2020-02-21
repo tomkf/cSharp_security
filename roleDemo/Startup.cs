@@ -51,7 +51,6 @@ namespace roleDemo {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite("Data Source=.\\wwwroot\\sql.db"));
 
-            //JWT config.
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

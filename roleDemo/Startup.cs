@@ -31,7 +31,7 @@ namespace roleDemo {
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseSqlite("Data Source=.\\wwwroot\\sql.db"));
+                options.UseSqlite("Data Source=.\\wwwroot\\sql.db"));
 
             services.AddDefaultIdentity<IdentityUser>()
                     .AddDefaultUI(UIFramework.Bootstrap4)

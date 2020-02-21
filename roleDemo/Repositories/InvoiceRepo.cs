@@ -18,40 +18,39 @@ namespace roleDemo.Repositories
             var invoicesCreated = CreateInitialInvoices();
         }
 
-        public List<InvoiceVM> GetAllInvoices()
+        public List<ViewModels.InvoiceVM> GetAllInvoices()
         {
-            var invoices = _context.Roles;
-            List<InvoiceVM> invoiceList = new List<InvoiceVM>();
+            var invoices = _context.Invoices;
+            List<ViewModels.InvoiceVM> invoiceList = new List<ViewModels.InvoiceVM>();
 
             foreach (var item in invoices)
             {
-                invoiceList.Add(new InvoiceVM() { Name = item.Name, Id = item.Id });
+                invoiceList.Add(new ViewModels.InvoiceVM() { UserName = item.UserName, InvoiceID = item.InvoiceID });
             }
             return invoiceList;
         }
 
-        public InvoiceVM GetInvoice(string invoiceName)
+        public ViewModels.InvoiceVM GetInvoice(string invoiceName)
         {
-            var invoice = _context.Roles.Where(r => r.Name == invoiceName).FirstOrDefault();
+            var invoice = _context.Invoices.Where(r => r.UserName == invoiceName).FirstOrDefault();
             if (invoice != null)
             {
-                return new InvoiceVM() { Name = invoice.Name, Id = invoice.Id };
+                return new ViewModels.InvoiceVM() { UserName = invoice.UserName, InvoiceID = invoice.InvoiceID };
             }
             return null;
         }
 
         public bool CreateInvoice(string invoiceName)
         {
-            var role = GetInvoice(invoiceName);
-            if (role != null)
+            var invoice = GetInvoice(invoiceName);
+            if (invoice != null)
             {
                 return false;
             }
-            _context.Roles.Add(new IdentityRole
+            _context.Invoices.Add(new Data.InvoiceVM
             {
-                Name = invoiceName,
-                Id = invoiceName,
-                NormalizedName = invoiceName.ToUpper()
+                UserName = invoiceName,
+                Id = invoiceName
             });
             _context.SaveChanges();
             return true;

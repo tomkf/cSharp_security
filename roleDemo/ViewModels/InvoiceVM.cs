@@ -8,11 +8,10 @@ namespace roleDemo.ViewModels
 {
     public class InvoiceVM
     {
-        public string Id { get; set; }
-        [Required]
-        [Display(Name = "Invoice Name")]
-       // [Display(InvoiceDetail = "Invoice Detail")]
-        public string Name { get; set; }
-    //    public string InvoiceDetail { get; set; }
+
+        public int InvoiceID { get; set; }
+        public string UserName { get; set; }
+        public DateTime Created { get; set; }
+        public decimal Total { get; set; }
     }
 }

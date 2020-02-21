@@ -6,7 +6,15 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace roleDemo.Data {
-public class InvoiceVM
+    public class ToDo
+    {
+        [Key] // Enables auto-increment.
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public bool IsComplete { get; set; }
+    }
+
+    public class InvoiceVM
 {
         internal string Id;
 
@@ -40,7 +48,7 @@ public class CustomUser
 
 public class ApplicationDbContext : IdentityDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
@@ -49,8 +57,11 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<InvoiceVM> Invoices { get; set; }
     public DbSet<CustomUser> CustomUsers { get; set; }
 
-    // Use this method to define composite primary keys and foreign keys.
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public DbSet<ToDo> ToDos { get; set; }
+
+
+        // Use this method to define composite primary keys and foreign keys.
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // required.
         base.OnModelCreating(modelBuilder);
@@ -69,6 +80,11 @@ public class ApplicationDbContext : IdentityDbContext
             .WithMany(c => c.Invoices)
             .HasForeignKey(fk => new { fk.UserName })
             .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
-    }
+
+            modelBuilder.Entity<ToDo>().HasData(
+                new { Id = 1, Description = "Finish work", IsComplete = false },
+                new { Id = 2, Description = "Go to gym", IsComplete = false }
+         );
+     }
   }
 }

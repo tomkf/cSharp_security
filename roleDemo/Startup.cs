@@ -13,6 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using roleDemo.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace roleDemo {
     public class Startup {
@@ -30,8 +34,40 @@ namespace roleDemo {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+            });
+
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite("Data Source=.\\wwwroot\\sql.db"));
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey
+                = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
 
             services.AddDefaultIdentity<IdentityUser>()
                     .AddDefaultUI(UIFramework.Bootstrap4)
@@ -58,6 +94,7 @@ namespace roleDemo {
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            app.UseCors("AllowAll");
 
             app.UseMvc(routes => {
                 routes.MapRoute(

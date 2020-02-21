@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using roleDemo.Data;
+﻿using roleDemo.Data;
 using roleDemo.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,63 +13,84 @@ namespace roleDemo.Repositories
 
         public InvoiceRepo(ApplicationDbContext context)
         {
-            this._context = context;
-            var invoicesCreated = CreateInitialInvoices();
+            _context = context;
         }
 
-        public List<ViewModels.InvoiceVM> GetAllInvoices()
+        public IEnumerable<InvoiceVM> All()
         {
-            var invoices = _context.Invoices;
-            List<ViewModels.InvoiceVM> invoiceList = new List<ViewModels.InvoiceVM>();
-
-            foreach (var item in invoices)
+            var invoices = _context.Invoices.Select(inv => new InvoiceVM()
             {
-                invoiceList.Add(new ViewModels.InvoiceVM() { UserName = item.UserName, InvoiceID = item.InvoiceID });
-            }
-            return invoiceList;
+                InvoiceID = inv.InvoiceID,
+                Created = inv.Created,
+                Total = inv.Total,
+                UserName = inv.UserName
+            });
+
+            return invoices;
         }
 
-        public ViewModels.InvoiceVM GetInvoice(string invoiceName)
+        public List<InvoiceVM> GetAllUsers()
         {
-            var invoice = _context.Invoices.Where(r => r.UserName == invoiceName).FirstOrDefault();
-            if (invoice != null)
+            var users = _context.CustomUsers;
+            List<InvoiceVM> usersList = new List<InvoiceVM>();
+
+            foreach (var user in users)
             {
-                return new ViewModels.InvoiceVM() { UserName = invoice.UserName, InvoiceID = invoice.InvoiceID };
+                usersList.Add(new InvoiceVM() { UserName = user.UserName });
             }
+            return usersList;
+        }
+
+        public CustomUser GetUserName(string username)
+        {
+            var userFound = _context.CustomUsers.Where(cu => cu.UserName == username).FirstOrDefault();
+
+            if (userFound != null)
+            {
+                return userFound;
+            }
+
             return null;
         }
 
-        public bool CreateInvoice(string invoiceName)
+        public bool Create(InvoiceVM invoice)
         {
-            var invoice = GetInvoice(invoiceName);
-            if (invoice != null)
+            try
+            {
+                var userName = GetUserName(invoice.UserName);
+
+                _context.Invoices.Add(new InvoiceVM
+                {
+                    UserName = userName.UserName,
+                    Created = DateTime.Now,
+                    Total = invoice.Total
+                });
+
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
             {
                 return false;
             }
-            _context.Invoices.Add(new Data.InvoiceVM
-            {
-                UserName = invoiceName,
-                Id = invoiceName
-            });
-            _context.SaveChanges();
-            return true;
+
         }
 
-        public bool CreateInitialInvoices()
+        public bool Delete(int id)
         {
-            // Create invoices if none exist.
-            // This is a simple way to do it but it would be better to use a seeder.
-            string[]invoiceNames = { "Internal", "Sales", "Quarter 2" };
-            foreach (var invoiceName in invoiceNames)
+            try
             {
-                var created = CreateInvoice(invoiceName);
-                // Role already exists so exit.
-                if (!created)
-                {
-                    return false;
-                }
+                InvoiceVM removeInvoice = _context.Invoices.Where(inv => inv.InvoiceID == id).FirstOrDefault();
+                _context.Invoices.Remove(removeInvoice);
+                _context.SaveChanges();
+
+                return true;
             }
-            return true;
+            catch (Exception e)
+            {
+                return false;
+            }
         }
     }
 }

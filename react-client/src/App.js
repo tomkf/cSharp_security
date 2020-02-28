@@ -18,8 +18,8 @@ class App extends React.Component {
     }
 
     // Called when constructor is finished building component.
-    componentDidMount() {  
-        if(sessionStorage.getItem(AUTH_TOKEN)!=null) {
+    componentDidMount() { 
+      if(sessionStorage.getItem(AUTH_TOKEN)!=null) {
           this.setState({ 
             token:sessionStorage.getItem(AUTH_TOKEN)});
         }
